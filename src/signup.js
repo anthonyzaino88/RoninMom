@@ -1,4 +1,4 @@
-// src/signup.js
+
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { app } from './firebase-config'; 
 
@@ -18,7 +18,7 @@ export function signUpUser(email, password) {
 }
 
 
-// Continuing from your existing Firebase Auth logic in signup.js
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signup-form');
