@@ -1,0 +1,14 @@
+// src/firebase-config.js
+import { initializeApp } from 'firebase/app';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAl85luI377sPdho37zWEhvzkwQ-xnIO2E",
+  authDomain: "roninmom-fc5b4.firebaseapp.com",
+  projectId: "roninmom-fc5b4",
+  storageBucket: "roninmom-fc5b4.appspot.com",
+  messagingSenderId: "896374812072",
+  appId: "1:896374812072:web:9f7c8dfddacbedec8ec19d",
+  measurementId: "G-ER6VM479RR"
+};
+
+export const app = initializeApp(firebaseConfig);
