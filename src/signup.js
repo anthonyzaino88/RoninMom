@@ -19,7 +19,9 @@ export async function signUpUser(email, password, username) {
     const uid = userCredential.user.uid;
 
     // Store the username in Firestore
-    await setDoc(doc(db, 'usernames', uid), { username: username });
+    // Store the username with the username as the document ID
+    await setDoc(doc(db, 'usernames', username), { uid: userCredential.user.uid });
+
 
     // Send email verification
     await sendEmailVerification(userCredential.user);
