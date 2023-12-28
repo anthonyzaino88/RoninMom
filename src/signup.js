@@ -11,11 +11,12 @@ export async function signUpUser(email, password, username) {
     const usernameSnap = await getDoc(usernameRef);
 
     if (usernameSnap.exists()) {
+      console.log("Username already taken:", username);
       throw new Error('Username is already taken');
     }
     console.log("Username is available:", username);
 
-    console.log("Creating user account");
+    console.log("Creating user account with email:", email);
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     console.log("User account created:", userCredential.user.uid);
 
@@ -23,7 +24,7 @@ export async function signUpUser(email, password, username) {
     await updateProfile(userCredential.user, { displayName: username });
     console.log("User profile updated with display name");
 
-    console.log("Storing username in Firestore");
+    console.log("Storing username in Firestore", username);
     await setDoc(doc(db, 'usernames', username), { uid: userCredential.user.uid });
     console.log("Username saved in Firestore:", username);
 
@@ -31,6 +32,6 @@ export async function signUpUser(email, password, username) {
     await sendEmailVerification(userCredential.user);
     console.log("Verification email sent");
   } catch (error) {
-    console.error("Error in sign up: ", error);
+    console.error("Error during sign up: ", error);
   }
 }
