@@ -8,43 +8,40 @@ export async function signUpUser(email, password, username) {
   try {
     console.log("Starting sign-up process for:", email);
 
-    // Username uniqueness check
+    // Check for username uniqueness
     console.log("Checking if username exists:", username);
     const usernameRef = doc(db, 'usernames', username);
     const usernameSnap = await getDoc(usernameRef);
+    console.log("Username existence check completed");
+    
     if (usernameSnap.exists()) {
       console.log("Username already taken:", username);
       throw new Error('Username is already taken');
     }
     console.log("Username is available:", username);
 
-    // User account creation
+    // Create user account
     console.log("Creating user account");
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     console.log("User account created:", userCredential.user.uid);
 
-    // Updating user's profile
+    // Update user's profile
     console.log("Updating user's profile with display name:", username);
     await updateProfile(userCredential.user, { displayName: username });
     console.log("User profile updated");
 
-    // Storing username in Firestore
-    console.log("Attempting to store username in Firestore");
+    // Store username in Firestore
+    console.log("Attempting to store username in Firestore", username);
     await setDoc(doc(db, 'usernames', username), { uid: userCredential.user.uid });
     console.log("Username stored in Firestore:", username);
 
-    // Sending email verification
+    // Send email verification
     console.log("Attempting to send email verification");
     await sendEmailVerification(userCredential.user);
     console.log("Verification email sent");
 
   } catch (error) {
     console.error("Error during sign-up process:", error);
-    if (error.code) {
-      console.error("Error code:", error.code);
-    }
-    if (error.message) {
-      console.error("Error message:", error.message);
-    }
+    console.error("Error details:", error.message);
   }
 }
