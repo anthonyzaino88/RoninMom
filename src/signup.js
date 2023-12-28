@@ -1,37 +1,50 @@
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { app, db } from './firebase-config'; // Assuming db is your Firestore instance
+import { app, db } from './firebase-config';
 
 export async function signUpUser(email, password, username) {
   const auth = getAuth(app);
 
   try {
+    console.log("Starting sign-up process for:", email);
+
+    // Username uniqueness check
     console.log("Checking if username exists:", username);
     const usernameRef = doc(db, 'usernames', username);
     const usernameSnap = await getDoc(usernameRef);
-
     if (usernameSnap.exists()) {
       console.log("Username already taken:", username);
       throw new Error('Username is already taken');
     }
     console.log("Username is available:", username);
 
-    console.log("Creating user account with email:", email);
+    // User account creation
+    console.log("Creating user account");
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     console.log("User account created:", userCredential.user.uid);
 
+    // Updating user's profile
     console.log("Updating user's profile with display name:", username);
     await updateProfile(userCredential.user, { displayName: username });
-    console.log("User profile updated with display name");
+    console.log("User profile updated");
 
-    console.log("Storing username in Firestore", username);
+    // Storing username in Firestore
+    console.log("Attempting to store username in Firestore");
     await setDoc(doc(db, 'usernames', username), { uid: userCredential.user.uid });
-    console.log("Username saved in Firestore:", username);
+    console.log("Username stored in Firestore:", username);
 
-    console.log("Sending email verification");
+    // Sending email verification
+    console.log("Attempting to send email verification");
     await sendEmailVerification(userCredential.user);
     console.log("Verification email sent");
+
   } catch (error) {
-    console.error("Error during sign up: ", error);
+    console.error("Error during sign-up process:", error);
+    if (error.code) {
+      console.error("Error code:", error.code);
+    }
+    if (error.message) {
+      console.error("Error message:", error.message);
+    }
   }
 }
