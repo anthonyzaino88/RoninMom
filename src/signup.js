@@ -16,6 +16,13 @@ export async function signUpUser(email, password, username) {
 
     // Proceed with user creation if username is not taken
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+
+       // Update the user's profile with their display name (username)
+       await updateProfile(userCredential.user, {
+        displayName: username
+      });
+
     const uid = userCredential.user.uid;
 
     // Store the username in Firestore
