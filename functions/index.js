@@ -1,17 +1,16 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+const { onCall } = require("firebase-functions/v2/https");
+const admin = require('firebase-admin');
 admin.initializeApp();
 
-exports.addAdminRole = functions.https.onCall(async (data, context) => {
-  const email = data.email;
+exports.addAdminRole = onCall(async (data, context) => {
+  // Ensure the caller is authorized to assign roles, typically by checking context.auth
 
+  const email = data.email;
   try {
-        const user = await admin.auth().getUserByEmail(email);
-        await admin.auth().setCustomUserClaims(user.uid, {
-            admin: true,
-        });
-        return { message: `Success! ${email} has been made an admin` };
-    } catch (err) {
-        return err;
-    }
+    const user = await admin.auth().getUserByEmail(email);
+    await admin.auth().setCustomUserClaims(user.uid, { admin: true });
+    return { message: `Success! ${email} has been made an admin.` };
+  } catch (err) {
+    return { error: err.message };
+  }
 });
