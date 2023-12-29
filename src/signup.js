@@ -2,7 +2,7 @@ import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateP
 import { doc, setDoc } from 'firebase/firestore';
 import { app, db } from './firebase-config';
 
-export async function signUpUser(email, password, username) {
+export async function signUpUser(email, password) {
   const auth = getAuth(app);
 
   try {
