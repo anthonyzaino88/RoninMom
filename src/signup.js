@@ -8,16 +8,11 @@ export async function signUpUser(email, password, username) {
   try {
     console.log("Creating user account with email:", email);
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const uid = userCredential.user.uid;
-    console.log("User account created with UID:", uid);
+    console.log("User account created with UID:", userCredential.user.uid);
 
-    console.log("Updating user's profile with display name:", username);
-    await updateProfile(userCredential.user, { displayName: username });
-    console.log("User profile updated");
-
-    console.log("Storing user data in Firestore under 'Users' collection");
-    await setDoc(doc(db, 'Users', uid), { username: username, email: email });
-    console.log("User data stored in Firestore:", uid);
+    console.log("Storing test data in Firestore");
+    await setDoc(doc(db, 'TestCollection', 'TestDocument'), { testField: 'testValue' });
+    console.log("Test data stored in Firestore");
 
     console.log("Sending email verification");
     await sendEmailVerification(userCredential.user);
